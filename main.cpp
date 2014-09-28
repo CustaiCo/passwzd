@@ -1,18 +1,16 @@
+#include <string>
 #include "includes/PWSfile.h"
 #include "includes/StringX.h"
 #include "includes/UTF8Conv.h"
 #include "includes/ItemData.h"
-#include <getopt.h>
-#include <wchar.h>
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
 #include "includes/keyutils.h"
-
+#include "config.h"
+#include <systemd/sd-journal.h>
 
 int main(int argc, char *argv[]) {
-    int opt;
-    char * filename;
+    std::string filename;
+    std::string keyname;
+    std::string uuid_wanted; 
     char * password;
     StringX file;
     StringX pass; 
@@ -25,73 +23,66 @@ int main(int argc, char *argv[]) {
     const unsigned char *itemdata;
     size_t len;
     key_serial_t pkey;
+    ConfigFile *config;
 
-    filename = NULL;
-    password = NULL;
+    // this prevents us from going on if we don't know what password
+    if( argc < 2 )
+        exit(EXIT_FAILURE);
 
-    while((opt = getopt(argc, argv, "p:f:")) != -1 ) {
-        switch(opt) {
-        case 'p':
-            password = optarg;
-            break;
-        case 'f':
-            filename = optarg;
-            break;
-        default: 
-            puts( "nope\n" );
-        }
+    config = ConfigFile::GetConfig();
+    filename = config->GetValue("filename");
+    if(filename.empty()) {
+        sd_journal_print(LOG_INFO,"could not find filename in config file");
+        exit(EXIT_FAILURE);
     }
 
-    if( password == NULL ) {
-        pkey = request_key("user", "demopass", "i need a password", KEY_SPEC_SESSION_KEYRING );
-        if(pkey == -1) {
-            perror("I could not get my key");
-            return -1;
-        }
-        if(keyctl_read_alloc(pkey,(void **)&password) < 0){
-            perror("I could not read key");
-            return -1;
-        }
+    keyname = config->GetValue("keyname");
+    if(keyname.empty()) {
+        sd_journal_print(LOG_INFO,"could not find keyname in config file");
+        exit(EXIT_FAILURE);
+    }
+    pkey = request_key("user", keyname.c_str(), "xxxx", KEY_SPEC_SESSION_KEYRING);
+    if(pkey == -1) 
+    {
+        sd_journal_print(LOG_INFO,"Unable to get key %s for password unlock", keyname.c_str());
+        exit(EXIT_FAILURE); 
+    }
+    ret = keyctl_read_alloc(pkey,(void **)&password);
+    if(ret == -1)
+    {
+        sd_journal_perror("Unable to read key");
+        exit(EXIT_FAILURE); 
     }
     
-    if( filename == NULL )
-    {
-        std::cout << "not enuf\n";
-        return -1;
-    }
-    conv.FromUTF8((unsigned char *)filename,strlen(filename),file);
+    conv.FromUTF8((unsigned char *)filename.c_str(),filename.length(),file);
     conv.FromUTF8((unsigned char *)password,strlen(password),pass);
+    uuid_wanted = std::string(argv[1]);
+
     ret = PWSfile::CheckPasskey( file, pass, ver); 
     if( ret != PWSfile::SUCCESS ) {
-        std::cout << "doesn't work\n";
-        std::cout << "return value: " << ret << "\n";
-        return -1;
+        sd_journal_print(LOG_INFO,"password provided by key %s did not work.", keyname.c_str() );
+        exit(EXIT_FAILURE); 
     }
 
     pfile = PWSfile::MakePWSfile(file, ver, PWSfile::Read ,status);
     ret = pfile->Open(pass);
     if( ret != PWSfile::SUCCESS ) {
-        std::cout << "open fail\n";
-        std::cout << "return value: " << ret << "\n";
-        return -1;
+        sd_journal_print(LOG_INFO,"open of file did not work: %d", ret );
+        exit(EXIT_FAILURE); 
     }
-    std::cout << "open success\n";
 
-    while( (ret = pfile->ReadRecord(item)) == PWSfile::SUCCESS )
+    while((ret = pfile->ReadRecord(item)) == PWSfile::SUCCESS )
     {
-        std::cout << "Size: " << item.GetSize() << "\n";
         conv.ToUTF8(item.GetUUID(), itemdata, len);
-        std::cout << "UUID: " << itemdata << "\n";
-        conv.ToUTF8(item.GetTitle(), itemdata, len);
-        std::cout << "Title: " << itemdata << "\n";
+        if(uuid_wanted != (const char*)itemdata)
+            continue;
         conv.ToUTF8(item.GetPassword(), itemdata, len);
-        std::cout << "Password: " << itemdata << "\n";
+        std::cout << itemdata;
+        exit(EXIT_SUCCESS);
     }
 
-    std::cout << "final return: " << ret << "\n";
-
-    return 0;
-
+    sd_journal_print(LOG_INFO,"unable to find password with uuid: %s", argv[1] );
+    exit(EXIT_FAILURE);
 }
 
 
