@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
     std::string filename;
     std::string keyname;
-    std::string uuid_wanted; 
+    std::string id_wanted; 
     char * password;
     StringX file;
     StringX pass; 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     
     conv.FromUTF8((unsigned char *)filename.c_str(),filename.length(),file);
     conv.FromUTF8((unsigned char *)password,strlen(password),pass);
-    uuid_wanted = std::string(argv[1]);
+    id_wanted = std::string(argv[1]);
 
     ret = PWSfile::CheckPasskey( file, pass, ver); 
     if( ret != PWSfile::SUCCESS ) {
@@ -74,14 +74,17 @@ int main(int argc, char *argv[]) {
     while((ret = pfile->ReadRecord(item)) == PWSfile::SUCCESS )
     {
         conv.ToUTF8(item.GetUUID(), itemdata, len);
-        if(uuid_wanted != (const char*)itemdata)
-            continue;
+        if(id_wanted != (const char*)itemdata) {
+            conv.ToUTF8(item.GetTitle(), itemdata, len);
+            if(id_wanted != (const char*)itemdata)
+                continue;
+        }
         conv.ToUTF8(item.GetPassword(), itemdata, len);
         std::cout << itemdata;
         exit(EXIT_SUCCESS);
     }
 
-    sd_journal_print(LOG_INFO,"unable to find password with uuid: %s", argv[1] );
+    sd_journal_print(LOG_INFO,"unable to find password with id: %s", argv[1] );
     exit(EXIT_FAILURE);
 }
 

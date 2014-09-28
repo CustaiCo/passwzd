@@ -1,7 +1,7 @@
 CC = c++
 SRC = config.cpp main.cpp
 LDFLAGS = -L. -L./libs/ -los -lcore -los -luuid -lxerces-c -lkeyutils -lsystemd
-CFLAGS = -std=c++11 -DUNICODE
+CFLAGS = -std=c++11 -DUNICODE -O2
 
 OBJ = ${SRC:.cpp=.o}
 

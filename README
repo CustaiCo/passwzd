@@ -1,0 +1,27 @@
+This utility allows you to use keyctl and a Password Safe (http://passwordsafe.sourceforge.net/)
+database to automate password entry. The program passwzd will output to standard output the 
+selected password allowing you to put it into any program that allows shell commands to be
+run to obtain passwords when needed.
+
+The secret phrase used to unlock the database is stored using the keyutils (man 7 keyutils) 
+of the Linux kernel. The name of the database and the key to look for are stored in a 
+configuration file, default path ~/.pwsafe/psaferc or this can be set with the PSAFERC 
+environment variable. The key should be in the session key-ring of the spawning program's
+process.
+
+This program uses the code for working with the password databases directly from the 
+sources on sourceforge. The files in libs/, libcore.a and libos.a, can be found in the 
+lib/unicoderelease or lib/unicoderelease folder after compiling Password Safe. The header
+files have been slightly modified to use a flat directory structure, and there is also
+a modified keyutils.h that has the code needed for it to link properly with c++. Because
+it uses the exact same code as the primary project, all password databases should be
+fully supported. 
+
+This library needs libuuid, libxerces-c as dependencies from the Password Safe code,
+and additionally libkeyutils and libsystemd for the key management and logging parts
+of the application. Right now there is no way to input keys, you need to use the
+keyctl program provided with keyutils to do it. The next planned feature is a way to 
+more easily add keys and set expiration times. 
+
+The argument to the passwzd program is either the UUID of the record (for newer database
+formats only) or the title of the entry of the password you wish to have output.
