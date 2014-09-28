@@ -1,6 +1,6 @@
 CXX ?= c++
 LIBS = config.o
-LDFLAGS = -L. -L./libs/ -los -lcore -los -luuid -lxerces-c -lkeyutils -lsystemd
+LDFLAGS =  -L. -L./libs/ -lcore -los -lcore -luuid -lkeyutils -lsystemd
 CFLAGS = -std=c++11 -DUNICODE -O2
 
 OBJ = config.o cachekey.o main.o
