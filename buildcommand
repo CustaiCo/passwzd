@@ -1,1 +1,0 @@
-g++ main.cpp -DUNICODE -L ./libs  -lcore -los -lxerces-c -luuid
