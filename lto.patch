@@ -1,0 +1,97 @@
+diff --git a/src/core/Makefile b/src/core/Makefile
+index 11b3385..186b66e 100644
+--- a/src/core/Makefile
++++ b/src/core/Makefile
+@@ -11,27 +11,27 @@ NAME=core
+ DEPDIR= ./deps
+ 
+ # Following not used in Linux build
+-NOTSRC          = PWSclipboard.cpp
++NOTSRC          = PWSclipboard.cpp \
++                  XML/XMLFileHandlers.cpp XML/XMLFileValidation.cpp \
++                  XML/Xerces/XFileSAX2Handlers.cpp XML/Xerces/XFileValidator.cpp \
++                  XML/Xerces/XFileXMLProcessor.cpp XML/Xerces/XFilterSAX2Handlers.cpp \
++                  XML/Xerces/XFilterXMLProcessor.cpp XML/Xerces/XSecMemMgr.cpp
+ 
+ LIBSRC          = BlowFish.cpp CheckVersion.cpp \
+-                  ItemData.cpp ItemField.cpp  PWPolicy.cpp \
+-                  Match.cpp PWCharPool.cpp CoreImpExp.cpp \
+-                  PWHistory.cpp PWSAuxParse.cpp \
+-                  PWScore.cpp PWSdirs.cpp PWSfile.cpp \
++                  ItemData.cpp ItemField.cpp  \
++                  PWSAuxParse.cpp \
++                  PWSfile.cpp \
+                   PWSfileV1V2.cpp PWSfileV3.cpp \
+-                  PWSFilters.cpp PWSLog.cpp PWSprefs.cpp \
+-                  Command.cpp PWSrand.cpp Report.cpp \
+-                  sha1.cpp sha256.cpp core_st.cpp\
++                  sha1.cpp sha256.cpp \
+                   StringX.cpp SysInfo.cpp \
+                   TwoFish.cpp UnknownField.cpp  \
+-                  UTF8Conv.cpp Util.cpp CoreOtherDB.cpp \
+-                  VerifyFormat.cpp XMLprefs.cpp \
+-                  ExpiredList.cpp \
+-                  pugixml/pugixml.cpp \
+-                  XML/XMLFileHandlers.cpp XML/XMLFileValidation.cpp \
+-                  XML/Xerces/XFileSAX2Handlers.cpp XML/Xerces/XFileValidator.cpp \
+-                  XML/Xerces/XFileXMLProcessor.cpp XML/Xerces/XFilterSAX2Handlers.cpp \
+-                  XML/Xerces/XFilterXMLProcessor.cpp XML/Xerces/XSecMemMgr.cpp PWSLog.cpp
++                  UTF8Conv.cpp Util.cpp \
++		  PWSFilters.cpp PWSLog.cpp PWSprefs.cpp \
++                  Match.cpp PWSdirs.cpp PWCharPool.cpp PWPolicy.cpp \
++                  VerifyFormat.cpp  ExpiredList.cpp PWSrand.cpp Command.cpp \
++		  core_st.cpp  PWHistory.cpp  Report.cpp  PWSLog.cpp \
++                  pugixml/pugixml.cpp CoreImpExp.cpp  XMLprefs.cpp PWScore.cpp CoreOtherDB.cpp \
++                  
+ 
+ SRC             = $(LIBSRC)
+ 
+@@ -55,7 +55,7 @@ CPPFLAGS += -O0 -g -ggdb -DUNICODE -DUSE_XML_LIBRARY=XERCES -DWCHAR_INCOMPATIBLE
+ 			-D_DEBUG -DDEBUG
+ CFLAGS += -g
+ else ifeq ($(CONFIG),unicoderelease)
+-CPPFLAGS += -O -DUNICODE -DUSE_XML_LIBRARY=XERCES -DWCHAR_INCOMPATIBLE_XMLCH -DNDEBUG
++	CPPFLAGS += -flto -Os -fstrict-enums -fno-threadsafe-statics -std=c++11 -DUNICODE -DWCHAR_INCOMPATIBLE_XMLCH -DNDEBUG
+ endif
+ 
+ # rules
+@@ -73,7 +73,7 @@ debug release unicodedebug unicoderelease:
+ 	$(MAKE) all CONFIG=$@
+ 
+ $(LIB): $(LIBOBJ)
+-	ar rvus $@ $(filter %.o,$^)
++	gcc-ar rvus $@ $(filter %.o,$^)
+ 
+ core_st.cpp core_st.h : core.rc2
+ 	../../Misc/rc2cpp.pl $^
+diff --git a/src/os/linux/Makefile b/src/os/linux/Makefile
+index 471a050..5ac81b5 100644
+--- a/src/os/linux/Makefile
++++ b/src/os/linux/Makefile
+@@ -7,7 +7,7 @@
+ CONFIG?=unicodedebug
+ #CONFIG=unicoderelease
+ 
+-WX_CONFIG?=/usr/bin/wx-config
++WX_CONFIG?=/usr/bin/wx-config-2.8
+ CPPINC=`$(WX_CONFIG) --debug=no --unicode=yes --inplace --cxxflags`
+ 
+ DEPDIR= ./deps
+@@ -55,7 +55,7 @@ else ifeq ($(CONFIG),unicodedebug)
+ CPPFLAGS += -O0 -g -ggdb -DUNICODE -DDEBUG
+ CFLAGS += -g
+ else ifeq ($(CONFIG),unicoderelease)
+-CPPFLAGS += -O -DUNICODE -DNDEBUG
++CPPFLAGS += -flto -Os -fno-threadsafe-statics -fstrict-enums -std=c++11 -DUNICODE -DNDEBUG
+ endif
+ 
+ # rules
+@@ -73,7 +73,7 @@ debug release unicodedebug unicoderelease:
+ 	$(MAKE) all CONFIG=$@
+ 
+ $(LIB): $(LIBOBJ)
+-	ar rvus $@ $(filter %.o,$^)
++	gcc-ar rvus $@ $(filter %.o,$^)
+ 
+ clean:
+ 	@rm -f *~ $(OBJ) $(TEST) $(LIB)

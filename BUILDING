@@ -1,0 +1,22 @@
+This program uses the code for working with the password databases
+directly from the sources for password safe on sourceforge.  Because it
+uses the exact same code as the primary project, all password databases
+should be fully supported.  The files in libs/, libcore.a and libos.a,
+provided in binary form here, can be found obtained by compiling Password
+Safe with a few custom options.
+
+Unless some care is taken, the size of the resulting binaries can be very
+large, almost 1mb each. The supplied lto.patch may be used to patch the
+Makefiles of the sources from the Password Safe website. The Makefile in
+src/core/ has been edited to remove the dependencies on libxerces-c. I
+have also added the option to enable extra info in the binaries for
+link-time optimization, and changed them to use gcc-ar as the manual
+pages claim that normal ar will not be able to correctly preserve the
+lto info in the object file.
+
+You want to set  NO_YUBI=1 in the environment for the build and make
+unicoderelease build.  'NO_YUBI=1 make unicoderelease' as one line should
+do it. The lib/unicoderelease/ folder will have the archive files. The
+header files in the included source have been slightly modified to use
+a flat directory structure, and there is also a modified keyutils.h that
+has the code needed for it to link properly with c++.

@@ -14,7 +14,8 @@ program's process.
 
 This library needs libuuid as a dependency from the Password Safe code,
 and additionally libkeyutils and libsystemd for the key management and
-logging parts of the application.
+logging parts of the application. See the BUILDING document for more
+info on this process.
 
 The argument to the passwzd program is either the UUID of the record
 (for newer database formats only) or the title of the entry of the
@@ -27,18 +28,3 @@ that time the key will expire and won't be available. You can set
 a special value of 0 in order to have the key not expire until the
 keychain itself expires. This is usually whenever the process that set
 up the key terminates.
-
-This program uses the code for working with the password databases
-directly from the sources for password safe on sourceforge.  Because it
-uses the exact same code as the primary project, all password databases
-should be fully supported.  The files in libs/, libcore.a and libos.a,
-provided in binary form here, can be found in the lib/unicoderelease
-folder after compiling Password Safe with a few custom options.  The
-Makefile in src/core/ should be edited to remove -DUSE_XML_LIBRARY=XERCES
-the compilation of the files under the src/core/XML folder as dependencies
-in the build.  The XML code seems only to be needed for importing
-certain XML formats from other utilities. NO_YUBI=1 has also been set
-for the build, and it is a unicoderelease build.  The header files in
-the included source have been slightly modified to use a flat directory
-structure, and there is also a modified keyutils.h that has the code
-needed for it to link properly with c++.
