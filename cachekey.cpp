@@ -26,7 +26,6 @@ int main(int argc, char *argv[]) {
     StringX pass; 
     CUTF8Conv conv; 
     PWSfile::VERSION ver;
-    PWSfile* pfile;
     int ret;
     unsigned long int timeout_seconds;
     key_serial_t pkey;

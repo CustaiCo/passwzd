@@ -1,10 +1,4 @@
-#include <map>
-#include <iostream>
-#include <string>
 #include <fstream>
-#include <memory>
-#include <stdexcept>
-#include <cstdlib>
 #include "config.h"
 #include <systemd/sd-journal.h>
 #include <wordexp.h>
@@ -68,7 +62,7 @@ const std::string ConfigFile::GetValue(const std::string& item) {
     if(!loaded)
         return "";
     try {
-        return values[item.c_str()];
+        return values.at(item);
     } catch (const std::out_of_range e) {
         return "";
     }
@@ -92,7 +86,7 @@ void ConfigFile::ParseFile(std::ifstream& cfile) {
         }
         std::string key = std::string(line,0,index); 
         std::string value = ExpandPath(line.substr(index+1).c_str());
-        values.insert(std::pair<std::string,std::string>(key,value));
+        values.insert(std::make_pair(key,value));
         if(values.size() > TOO_MANY_LINES) {
             sd_journal_print(LOG_INFO,"Configuration file has more than %d lines", TOO_MANY_LINES);
             break;

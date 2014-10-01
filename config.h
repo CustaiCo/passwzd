@@ -1,7 +1,7 @@
 #ifndef __CONFIGFILE_H
 #define __CONFIGFILE_H
 #include <string>
-#include <map>
+#include <unordered_map>
 
 class ConfigFile {
     public:
@@ -17,7 +17,7 @@ class ConfigFile {
     private:
         ConfigFile();
         void ParseFile(std::ifstream&);
-        std::map<std::string, std::string> values;
+        std::unordered_map<std::string, std::string> values;
         bool loaded;
         static std::string GetConfigFilename();
         static std::string ExpandPath(const char*);

@@ -1,7 +1,7 @@
 CXX ?= c++
 LIBS = config.o
-LDFLAGS =  -L. -L./libs/ -lcore -los -lcore -luuid -lkeyutils -lsystemd
-CFLAGS = -std=c++11 -DUNICODE -O2
+LDFLAGS = -Wl,-s -L. -L./libs/ -lcore -los -lcore -luuid -lkeyutils -lsystemd
+CFLAGS =  -Wall -fstrict-enums -Os -Wextra -std=c++11 -march=native -flto -DUNICODE -DNDEBUG
 
 OBJ = config.o cachekey.o main.o
 
@@ -21,14 +21,14 @@ options:
 
 passwzd : ${OBJ}
 	@echo CXX -o $@
-	@${CXX} -o $@ main.o ${LIBS} ${LDFLAGS}
+	@${CXX} -o $@ main.o ${LIBS} ${CFLAGS} ${LDFLAGS}
 
 cachekey : ${OBJ} 
 	@echo CXX -o $@
-	@${CXX} -o $@ $@.o ${LIBS} ${LDFLAGS}
+	@${CXX} -o $@ $@.o ${LIBS} ${CFLAGS} ${LDFLAGS}
 
 clean:
 	@echo cleaning
-	@rm -f passwzd cachekey ${OBJ}
+	@rm -f passwzd cachekey ${OBJ} *.rpo
 
 .PHONY: all options clean
