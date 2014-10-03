@@ -4,14 +4,16 @@
 #include "includes/UTF8Conv.h"
 #include "includes/ItemData.h"
 #include "includes/keyutils.h"
-#include "config.h"
 #include <systemd/sd-journal.h>
+#include "config.h"
+#include "arg.h"
 
 int main(int argc, char *argv[]) {
     std::string filename;
     std::string keyname;
     std::string id_wanted; 
     char * password;
+    char *argv0;
     StringX file;
     StringX pass; 
     CUTF8Conv conv; 
@@ -19,14 +21,21 @@ int main(int argc, char *argv[]) {
     PWSfile* pfile;
     int ret;
     int status;
+    bool newline = false;
     CItemData item;
     const unsigned char *itemdata;
     size_t len;
     key_serial_t pkey;
     ConfigFile *config;
 
+    ARGBEGIN {
+        case 'n':
+            newline = true;
+            break;
+    } ARGEND
+
     // this prevents us from going on if we don't know what password
-    if( argc < 2 )
+    if(argv == NULL || *argv == NULL)
         exit(EXIT_FAILURE);
 
     config = ConfigFile::GetConfig();
@@ -56,7 +65,7 @@ int main(int argc, char *argv[]) {
     
     conv.FromUTF8((unsigned char *)filename.c_str(),filename.length(),file);
     conv.FromUTF8((unsigned char *)password,strlen(password),pass);
-    id_wanted = std::string(argv[1]);
+    id_wanted = std::string(*argv);
 
     ret = PWSfile::CheckPasskey( file, pass, ver); 
     if( ret != PWSfile::SUCCESS ) {
@@ -81,6 +90,8 @@ int main(int argc, char *argv[]) {
         }
         conv.ToUTF8(item.GetPassword(), itemdata, len);
         std::cout << itemdata;
+        if(newline)
+            std::cout << "\n";
         exit(EXIT_SUCCESS);
     }
 

@@ -19,7 +19,9 @@ info on this process.
 
 The argument to the passwzd program is either the UUID of the record
 (for newer database formats only) or the title of the entry of the
-password you wish to have output.
+password you wish to have output. It can also take the optional -n
+parameter which will emit a newline after the password. I have found
+that a few programs require this instead of checking the exit code.
 
 In order to put your key into the session keyring, you can use the
 supplied cachekey program. It will either use the timeout from the

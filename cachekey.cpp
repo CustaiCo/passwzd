@@ -17,7 +17,7 @@
 
 void ToggleEcho(bool);
 
-int main(int argc, char *argv[]) {
+int main(void) {
     std::string filename;
     std::string keyname;
     std::string timeout; 
