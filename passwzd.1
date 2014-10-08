@@ -1,0 +1,56 @@
+.Dd October 7, 2014
+.Os Linux
+.Dt passwzd 1 URM
+.Sh NAME
+.Nm passwzd
+.Nd retrieves passwords
+.Sh SYNOPSIS
+.Nm 
+.Op Fl n
+.Brq Ar title | Ar uuid
+.Sh DESCRIPTION
+.Nm
+will take use a a key previously cached by
+.Xr cachekey 1
+to open a 
+.Em Password Safe 
+database then write the value to standard output.
+
+.Bl -tag
+.It Fl n
+output a newline at the end of the password
+.El
+.Pp
+The configuration of what password database to use is controlled
+by the 
+.Pa psaferc
+which is located in
+.Pa ~/.pwsafe
+by default. If the
+.Ar title
+is specified as the search term, it will output the first matching
+password that it finds. The
+.Ar uuid
+search can be done on newer databases. The older
+.Em Password Safe
+databases do not support them.
+.Sh RETURN VALUE
+.Nm
+will return 0 on success, and -1 if the password could not be found
+or no working key was found in the session key chain.
+.Sh FILES
+.Bl -tag
+.Pa ~/.pwsafe/psaferc
+Holds configuration settings for passwzd and cachekey
+.Sh EXAMPLES
+.Bl -tag -indent
+.It passwzd email | xclip
+Stores your password for your email into the X clipboard.
+.It passwzd root | sudo -S pacman -Syu
+Gets your password stored as 'root' and passes it to sudo to run a system update
+.El
+.Sh SEE ALSO
+.Xr cachekey 1 ,
+.Xr keyctl 1 ,
+.Xr keyctl 7 ,
+.Xr pwsafe 1

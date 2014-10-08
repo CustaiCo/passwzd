@@ -1,0 +1,62 @@
+.Dd October 7, 2014
+.Dt cachekey 1 URM
+.Os Linux
+.Sh NAME
+.Nm cachekey
+.Nd caches keys in the keyctl session key chain
+.Sh SYNOPSIS
+.Nm 
+.Sh DESCRIPTION
+.Nm
+will open add a new key to the session cache and if configured to
+will set up a timeout on the key for expiration. It will check the 
+key against a specified 
+.Em Password Safe 
+database to ensure there that only valid keys are used. 
+The configuration of what password database to use 
+and the timeout are controlled by the 
+.Pa psaferc
+which is located in
+.Pa ~/.pwsafe
+by default. It can adjust three settings:
+.Bl -bullet
+.It 
+.Va filename
+path to your password file.
+.It 
+.Va keyname
+the keyname in the session keyring.
+.It 
+.Va timeout
+the number of seconds before the key expires or 0 to disable
+.El
+.Pp
+It is important that the session keyring be set up first 
+before calling
+.Nm
+or the session keyring it stores it in will disappear after
+the command terminates. Your session can be started by configuring
+.Xr PAM 8
+or by editing the a login script or
+.Pa .xinitrc .
+Running
+.Sq Ic keyctl session
+will create a new unnamed session keychain for all processes that spawn under
+the process it was created in.
+.Sh FILES
+.Pa ~/.pwsafe/psaferc
+Holds configuration settings for passwzd and cachekey
+.Sh EXAMPLES
+.Bd -literal -compact
+.Sy 	Example psaferc
+
+	filename=~/.pwsafe/mypasswords.psafe3
+	keyname=keyname
+	timeout=320
+.Ed
+.El
+.Sh SEE ALSO
+.Xr passwzd 1 ,
+.Xr keyctl 1 ,
+.Xr keyctl 7 ,
+.Xr pwsafe 1
