@@ -20,11 +20,11 @@ void ToggleEcho(bool);
 int main(void) {
     std::string filename;
     std::string keyname;
-    std::string timeout; 
-    std::string input_password; 
+    std::string timeout;
+    std::string input_password;
     StringX file;
-    StringX pass; 
-    CUTF8Conv conv; 
+    StringX pass;
+    CUTF8Conv conv;
     PWSfile::VERSION ver;
     int ret;
     unsigned long int timeout_seconds;

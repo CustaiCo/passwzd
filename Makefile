@@ -41,7 +41,7 @@ install: all
 	@cp -f cachekey.1 ${DESTDIR}${PREFIX}/share/man/man1/
 	@chmod 644 ${DESTDIR}${PREFIX}/share/man/man1/passwzd.1
 	@chmod 644 ${DESTDIR}${PREFIX}/share/man/man1/cachekey.1
-	
+
 clean:
 	@echo cleaning
 	@rm -f passwzd cachekey ${OBJ} *.rpo

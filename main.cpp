@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
     char * password;
     char *argv0;
     StringX file;
-    StringX pass; 
-    CUTF8Conv conv; 
+    StringX pass;
+    CUTF8Conv conv;
     PWSfile::VERSION ver;
     PWSfile* pfile;
     int ret;
