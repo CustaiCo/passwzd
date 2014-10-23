@@ -1,10 +1,10 @@
 CXX ?= c++
-LIBS = config.o
+LIBS = config.o main.o
 LDFLAGS = -L. -L./libs/ -lcore -los -lcore -luuid -lkeyutils -lsystemd
 CFLAGS =  -Wall -fstrict-enums -Os -Wextra -std=c++11 -march=native -flto -DUNICODE -DNDEBUG
 PREFIX = /usr/local
 
-OBJ = config.o cachekey.o main.o
+OBJ = config.o cachekey.o main.o passwzd.o
 
 all: options passwzd cachekey
 
@@ -20,11 +20,7 @@ options:
 	@echo CXX $<
 	@${CXX} -c ${CFLAGS} $<
 
-passwzd : ${OBJ}
-	@echo CXX -o $@
-	@${CXX} -o $@ main.o ${LIBS} ${CFLAGS} ${LDFLAGS}
-
-cachekey : ${OBJ} 
+passwzd cachekey : ${OBJ}
 	@echo CXX -o $@
 	@${CXX} -o $@ $@.o ${LIBS} ${CFLAGS} ${LDFLAGS}
 
