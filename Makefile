@@ -1,10 +1,10 @@
 CXX ?= c++
-LIBS = config.o main.o
+LIBS = config.o main.o c_bindings.o
 LDFLAGS = -L. -L./libs/ -lcore -los -lcore -luuid -lkeyutils -lsystemd
 CFLAGS =  -Wall -fstrict-enums -Os -Wextra -std=c++11 -march=native -flto -DUNICODE -DNDEBUG
 PREFIX = /usr/local
 
-OBJ = config.o cachekey.o main.o passwzd.o
+OBJ = config.o cachekey.o main.o passwzd.o c_bindings.o
 
 all: options passwzd cachekey
 
