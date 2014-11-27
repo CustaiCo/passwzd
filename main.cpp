@@ -27,23 +27,24 @@ std::string get_password(const std::string& master, const std::string& id_wanted
     filename = config->GetValue("filename");
     if(filename.empty())
         throw std::runtime_error("could not find filename in config file");
-   
+
     conv.FromUTF8((unsigned char *)filename.c_str(),filename.length(),file);
     conv.FromUTF8((unsigned char *)master.c_str(),master.length(),pass);
 
-    ret = PWSfile::CheckPasskey( file, pass, ver);
-    if( ret != PWSfile::SUCCESS )
+    ret = PWSfile::CheckPasskey(file, pass, ver);
+    if(ret != PWSfile::SUCCESS)
         throw std::runtime_error("password provided by key did not work.");
 
     pfile = PWSfile::MakePWSfile(file, ver, PWSfile::Read ,status);
     ret = pfile->Open(pass);
-    if( ret != PWSfile::SUCCESS )
+    if(ret != PWSfile::SUCCESS)
         throw std::runtime_error("open of file did not work: " + std::to_string(ret));
 
-    while((ret = pfile->ReadRecord(item)) == PWSfile::SUCCESS )
+    while((ret = pfile->ReadRecord(item)) == PWSfile::SUCCESS)
     {
         conv.ToUTF8(item.GetUUID(), itemdata, len);
-        if(id_wanted != (const char*)itemdata) {
+        if(id_wanted != (const char*)itemdata)
+        {
             conv.ToUTF8(item.GetTitle(), itemdata, len);
             if(id_wanted != (const char*)itemdata)
                 continue;
@@ -72,7 +73,7 @@ std::string get_password(const std::string& id_wanted)
     if(pkey == -1)
         throw std::runtime_error("Unable to get key " + keyname + " for password unlock");
 
-    ret = keyctl_read_alloc(pkey,(void **)&password);
+    ret = keyctl_read_alloc(pkey, (void **)&password);
     if(ret == -1)
         throw std::system_error(errno, std::system_category(), "Cannot read key");
 

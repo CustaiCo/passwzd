@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     }
     catch(std::runtime_error& e)
     {
-        sd_journal_print(LOG_INFO,e.what());
+        sd_journal_print(LOG_INFO, e.what());
         exit(EXIT_FAILURE);
     }
     std::cout << value;
