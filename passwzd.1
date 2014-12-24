@@ -1,28 +1,27 @@
-.Dd October 7, 2014
-.Os Linux
-.Dt passwzd 1 URM
+.Dd December 23, 2014
+.Dt PASSWZD 1
+.Os
 .Sh NAME
 .Nm passwzd
 .Nd retrieves passwords
 .Sh SYNOPSIS
-.Nm 
+.Nm
 .Op Fl n
-.Brq Ar title | Ar uuid
+.Bq Ar title | Ar uuid
 .Sh DESCRIPTION
 .Nm
 will take use a a key previously cached by
 .Xr cachekey 1
-to open a 
-.Em Password Safe 
+to open a
+.Em Password Safe
 database then write the value to standard output.
-
-.Bl -tag
+.Bl -tag -width Ds
 .It Fl n
 output a newline at the end of the password
 .El
 .Pp
 The configuration of what password database to use is controlled
-by the 
+by the
 .Pa psaferc
 which is located in
 .Pa ~/.pwsafe
@@ -34,21 +33,20 @@ password that it finds. The
 search can be done on newer databases. The older
 .Em Password Safe
 databases do not support them.
-.Sh DIAGNOSTICS
-.Ex -std passwzd
 .Sh FILES
-.Bl -tag
 .Pa ~/.pwsafe/psaferc
 Holds configuration settings for passwzd and cachekey
 .Sh EXAMPLES
-.Bl -tag -indent
+.Bl -tag -width Ds
 .It passwzd email | xclip
 Stores your password for your email into the X clipboard.
 .It passwzd root | sudo -S pacman -Syu
 Gets your password stored as 'root' and passes it to sudo to run a system update
 .El
+.Sh DIAGNOSTICS
+.Ex -std passwzd
 .Sh SEE ALSO
 .Xr cachekey 1 ,
 .Xr keyctl 1 ,
-.Xr keyctl 7 ,
-.Xr pwsafe 1
+.Xr pwsafe 1 ,
+.Xr keyctl 7

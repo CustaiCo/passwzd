@@ -1,6 +1,6 @@
 .Dd October 7, 2014
-.Dt cachekey 1 URM
-.Os Linux
+.Dt CACHEKEY 1
+.Os
 .Sh NAME
 .Nm cachekey
 .Nd caches keys in the keyctl session key chain
@@ -31,7 +31,7 @@ the keyname in the session keyring.
 the number of seconds before the key expires or 0 to disable
 .El
 .Pp
-It is important that the session keyring be set up first 
+It is important that the session keyring be set up first
 before calling
 .Nm
 or the session keyring it stores it in will disappear after
@@ -54,9 +54,8 @@ Holds configuration settings for passwzd and cachekey
 	keyname=keyname
 	timeout=320
 .Ed
-.El
 .Sh SEE ALSO
-.Xr passwzd 1 ,
 .Xr keyctl 1 ,
-.Xr keyctl 7 ,
-.Xr pwsafe 1
+.Xr passwzd 1 ,
+.Xr pwsafe 1 ,
+.Xr keyctl 7
